@@ -18,7 +18,10 @@ SECRET_KEY = env('SECRET_KEY', default='django-insecure-default-key-replace-in-p
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = env.list(
+    'ALLOWED_HOSTS',
+    default=[".vercel.app", "localhost", "127.0.0.1"]
+)
 
 # Application definition
 INSTALLED_APPS = [
