@@ -109,7 +109,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 # Database
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
+    'default': env.db('DATABASE_URL')
 }
 
 # Password validation
@@ -303,3 +303,10 @@ LOGIN_REDIRECT_URL = 'core:dashboard'
 LOGOUT_REDIRECT_URL = 'users:login'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'users:login'
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
