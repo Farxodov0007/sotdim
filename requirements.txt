@@ -9,14 +9,14 @@ djangorestframework
 djangorestframework-simplejwt
 django-cors-headers
 
-# Database & Cache
+# Cache
 redis
 django-redis
 
-# Elasticsearch (SAFE version)
+# Elasticsearch
 elasticsearch>=8.0.0
 
-# Async & Queue
+# Queue
 celery
 django-celery-results
 django-celery-beat
@@ -27,13 +27,12 @@ dj-rest-auth
 django-two-factor-auth
 django-otp
 
-# Admin UI
+# Admin
 django-jazzmin
 
 # Frontend
 django-htmx
 django-compressor
-sass   # ❌ libsass o‘rniga
 
 # Realtime
 channels[daphne]
@@ -41,7 +40,7 @@ channels-redis
 
 # Payments
 stripe
-payme-pkg
+# payme-pkg  ← TEST uchun olib tashlash tavsiya
 
 # AI
 openai
