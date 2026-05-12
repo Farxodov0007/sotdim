@@ -59,3 +59,4 @@ django-prometheus
 gunicorn
 Pillow
 python-dotenv
+argon2-cffi
