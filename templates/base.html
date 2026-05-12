@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="uz" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}sotdim.uz{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/logo_premium.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+                            400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+                            800: '#075985', 900: '#0c4a6e', 950: '#082f49',
+                        },
+                        accent: '#8b5cf6',
+                        surface: '#0f172a',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        html, body {
+            overflow-x: hidden;
+        }
+        .site-content, main {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        
+        /* Floating Background Particles */
+        .bg-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floating 20s infinite alternate ease-in-out;
+        }
+        @keyframes floating {
+            0% { transform: translate(-10%, -10%); }
+            100% { transform: translate(100vw, 80vh); }
+        }
+
+        /* Glass Refinement & Shimmer */
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass:hover {
+            border-color: rgba(14, 165, 233, 0.4);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.1);
+            transform: translateY(-4px);
+        }
+        .glass::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent);
+            transform: rotate(45deg);
+            transition: 0.8s;
+        }
+        .glass:hover::after {
+            left: 100%;
+            top: 100%;
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        /* Cursor Glow - Disable on Mobile */
+        #cursor-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+        }
+        @media (max-width: 768px) {
+            #cursor-glow { display: none !important; }
+            .preloader-logo-svg { width: 120px !important; height: 120px !important; }
+            .site-content { transform: scale(1) !important; }
+        }
+
+        /* Cinematic Preloader */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #020617;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: all 1.2s cubic-bezier(0.8, 0, 0.1, 1);
+        }
+        .preloader-logo-svg {
+            width: 180px;
+            height: 180px;
+            filter: drop-shadow(0 0 30px rgba(14, 165, 233, 0.4));
+        }
+        .logo-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-logo 3s ease-in-out forwards;
+        }
+        @keyframes draw-logo { to { stroke-dashoffset: 0; } }
+        
+        .preloader-text-wrap {
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .preloader-text-main {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            letter-spacing: 0.8em;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            transform: translateY(100%);
+            animation: slide-up-text 1s cubic-bezier(0.2, 1, 0.2, 1) 1.5s forwards;
+        }
+        @keyframes slide-up-text { to { transform: translateY(0); } }
+
+        .progress-container {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-top: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #0ea5e9;
+            animation: progress-load 2.5s forwards;
+        }
+        @keyframes progress-load { to { width: 100%; } }
+
+        .preloader-hidden {
+            transform: scale(1.5);
+            filter: blur(50px);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Site Reveal Animation */
+        .site-content {
+            opacity: 0;
+            filter: blur(20px);
+            transform: scale(0.95);
+            transition: all 1.2s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+        .site-content.loaded {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen overflow-x-hidden">
+    <div id="cursor-glow"></div>
+    <div class="bg-glow" style="top: -10%; left: -10%; animation-duration: 25s;"></div>
+    <div class="bg-glow" style="top: 60%; left: 80%; animation-duration: 35s; background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);"></div>
+
+    <div id="preloader">
+        <svg class="preloader-logo-svg" viewBox="0 0 512 512">
+            <path class="logo-path" d="M161 144L284 83.5V235L161 295.5V144Z" stroke="#0ea5e9" stroke-width="2" fill="none" />
+            <path class="logo-path" d="M228 368L351 307.5V459L228 519.5V368Z" stroke="#0ea5e9" stroke-width="2" fill="none" />
+            <path class="logo-path" d="M284 83.5L407 144V295.5L284 235V83.5Z" stroke="#38bdf8" stroke-width="2" fill="none" />
+            <path class="logo-path" d="M105 307.5L228 368V519.5L105 459V307.5Z" stroke="#38bdf8" stroke-width="2" fill="none" />
+        </svg>
+        <div class="preloader-text-wrap">
+            <div class="preloader-text-main">Sotdim.uz</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="main-content" class="site-content flex min-h-screen relative" x-data="{ sidebarOpen: false }">
+        <!-- Backdrop Overlay (Mobile only) -->
+        <div 
+            x-show="sidebarOpen" 
+            x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="sidebarOpen = false"
+            class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[55] lg:hidden"
+            x-cloak
+        ></div>
+
+        <!-- Sidebar -->
+        <aside 
+            :class="{
+                '-translate-x-full': !sidebarOpen,
+                'translate-x-0': sidebarOpen
+            }"
+            class="fixed inset-y-0 left-0 w-72 sidebar-gradient border-r border-slate-800 z-[60] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:w-64 lg:flex-shrink-0 lg:flex lg:flex-col"
+            x-cloak
+        >
+            <div class="flex flex-col h-full w-full">
+                <div class="p-6 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="/static/img/logo_premium.svg" alt="sotdim.uz" class="h-8 w-8 rounded-full border border-primary-500/30">
+                        <span class="font-heading font-bold text-xl tracking-tight">sotdim.<span class="text-primary-400">uz</span></span>
+                    </div>
+                    <button @click="sidebarOpen = false" class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <nav class="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
+                    <a href="{% url 'core:dashboard' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'dashboard' %}bg-primary-500/10 text-primary-400 border border-primary-500/20{% else %}text-slate-400 hover:bg-slate-800 transition-colors{% endif %}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{% url 'marketplace:product_list' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span>Marketplace</span>
+                    </a>
+                    <a href="{% url 'freelance:project_list' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Freelance</span>
+                    </a>
+                    <a href="{% url 'chat:chat_list' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="message-square" class="w-5 h-5"></i>
+                        <span>Xabarlar</span>
+                    </a>
+                    <a href="{% url 'ai_system:assistant' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="bot" class="w-5 h-5"></i>
+                        <span>AI Assistant</span>
+                    </a>
+                    <a href="{% url 'payments:wallet' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="wallet" class="w-5 h-5"></i>
+                        <span>Finance</span>
+                    </a>
+                    {% if request.user.is_authenticated and request.user.role == 'SELLER' %}
+                    <a href="{% url 'users:seller_dashboard' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="award" class="w-5 h-5"></i>
+                        <span>Seller Dashboard</span>
+                    </a>
+                    {% elif request.user.is_authenticated %}
+                    <a href="{% url 'users:become_seller' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="user-plus" class="w-5 h-5"></i>
+                        <span>Become a Seller</span>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'core:purchases' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                        <span>Haridlarim</span>
+                    </a>
+                    <a href="{% url 'marketplace:wishlist' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="heart" class="w-5 h-5"></i>
+                        <span>Istaklar</span>
+                    </a>
+                    <a href="{% url 'marketplace:ai_smart_search' %}" @click="if(window.innerWidth < 1024) sidebarOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        <span>AI Qidiruv</span>
+                    </a>
+                </nav>
+                <div class="p-4 border-t border-slate-800">
+                    <a href="{% url 'users:logout' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span>Chiqish</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Area -->
+        <main class="flex-1 flex flex-col min-h-screen min-w-0">
+            <header class="h-20 border-b border-slate-800 bg-slate-950/50 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button @click="sidebarOpen = !sidebarOpen" class="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="lg:hidden flex items-center gap-2">
+                        <img src="/static/img/logo_premium.svg" alt="logo" class="h-8 w-8 rounded-full">
+                        <span class="font-bold text-sm">sotdim.uz</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    {% if request.user.is_authenticated %}
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-800">
+                        <div class="text-right hidden md:block">
+                            <p class="text-sm font-bold text-white">{{ request.user.username }}</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 overflow-hidden">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ request.user.username }}" alt="Avatar">
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'users:login' %}" class="px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-xl text-sm font-bold transition-all">Kirish</a>
+                    {% endif %}
+                </div>
+            </header>
+
+            <section class="p-4 md:p-8">
+                {% if messages %}
+                <div class="mb-8 space-y-3">
+                    {% for message in messages %}
+                    <div class="p-4 rounded-xl flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% elif message.tags == 'error' %}bg-rose-500/10 text-rose-400 border border-rose-500/20{% else %}bg-blue-500/10 text-blue-400 border border-blue-500/20{% endif %}">
+                        <p class="text-sm font-medium">{{ message }}</p>
+                        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        const cursorGlow = document.getElementById('cursor-glow');
+        window.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            const mainContent = document.getElementById('main-content');
+            
+            // Sessiyada animatsiya bo'lganini tekshirish
+            if (sessionStorage.getItem('animationShown')) {
+                preloader.style.display = 'none';
+                mainContent.classList.add('loaded');
+                mainContent.style.transition = 'none';
+                mainContent.style.opacity = '1';
+                mainContent.style.filter = 'none';
+                mainContent.style.transform = 'none';
+                reveal();
+            } else {
+                setTimeout(() => {
+                    preloader.classList.add('preloader-hidden');
+                    mainContent.classList.add('loaded');
+                    sessionStorage.setItem('animationShown', 'true');
+                    setTimeout(reveal, 400); 
+                }, 2500); 
+            }
+        });
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 150) { reveals[i].classList.add("active"); }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+    </script>
+</body>
+</html>

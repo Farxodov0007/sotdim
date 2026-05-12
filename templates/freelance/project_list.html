@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load currency_tags %}
+
+{% block title %}Freelance Orders | sotdim.uz{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h1 class="text-3xl font-heading font-bold text-white">Freelance Orders</h1>
+            <p class="text-slate-400">Yangi loyihalar toping va daromad olishni boshlang.</p>
+        </div>
+        
+        {% if request.user.is_staff %}
+        <a href="{% url 'admin:freelance_freelanceproject_add' %}" class="px-6 py-3 bg-primary-600 hover:bg-primary-500 rounded-xl transition-all shadow-lg shadow-primary-500/20 flex items-center gap-2 font-bold">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            Loyihani e'lon qilish
+        </a>
+        {% else %}
+        <a href="{% url 'users:login' %}?next={% url 'freelance:project_list' %}" class="px-6 py-3 bg-primary-600 hover:bg-primary-500 rounded-xl transition-all shadow-lg shadow-primary-500/20 flex items-center gap-2 font-bold">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            Admin hisob bilan e'lon qilish
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Filters Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="glass p-6 rounded-2xl border-slate-800/50">
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="filter" class="w-4 h-4 text-primary-400"></i>
+                    Filtrlar
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Budjet</label>
+                        <select class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 outline-none">
+                            <option>Barchasi</option>
+                            <option>0 UZS - 100 UZS</option>
+                            <option>100 UZS - 500 UZS</option>
+                            <option>500 UZS+</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Kategoriya</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" class="accent-primary-500">
+                                <span class="text-sm text-slate-400 group-hover:text-white transition-colors">Web Development</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" class="accent-primary-500">
+                                <span class="text-sm text-slate-400 group-hover:text-white transition-colors">AI & Data Science</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" class="accent-primary-500">
+                                <span class="text-sm text-slate-400 group-hover:text-white transition-colors">Mobile Apps</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project List -->
+        <div class="lg:col-span-3 space-y-4">
+            {% for project in projects %}
+            <div class="glass p-6 rounded-2xl border-slate-800/50 hover:border-primary-500/30 transition-all group">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded uppercase border border-emerald-500/20">Ochiq</span>
+                            <h3 class="text-xl font-bold group-hover:text-primary-400 transition-colors">{{ project.title }}</h3>
+                        </div>
+                        <p class="text-slate-400 line-clamp-2 text-sm">{{ project.description }}</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-2xl font-bold text-white">{{ project.budget|uzs }}</p>
+                        <p class="text-xs text-slate-500">Muddati: {{ project.deadline|date:"d M, Y" }}</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-slate-800/50 flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <i data-lucide="users" class="w-4 h-4"></i>
+                            <span class="text-xs font-medium">{{ project.proposals.count }} takliflar</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span class="text-xs font-medium">{{ project.created_at|timesince }} oldin</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'freelance:create_order' project.id %}" class="px-5 py-2 bg-primary-600 hover:bg-primary-500 rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary-500/20">
+                        Buyurtma berish
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-20 glass rounded-2xl border-dashed border-slate-800">
+                <i data-lucide="clipboard-list" class="w-12 h-12 text-slate-700 mx-auto mb-4"></i>
+                <h3 class="text-xl font-bold text-slate-400">Hozircha buyurtmalar yo'q</h3>
+                <p class="text-slate-500 mt-1">Yangi loyihalar tez orada paydo bo'ladi.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

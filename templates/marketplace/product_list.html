@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load currency_tags %}
+
+{% block title %}Marketplace | sotdim.uz{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h1 class="text-3xl font-heading font-bold text-white">Digital Marketplace</h1>
+            <p class="text-slate-400">Eng sara raqamli mahsulotlar va AI yechimlar.</p>
+        </div>
+        
+        <div class="flex flex-wrap gap-4">
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input 
+                    type="text" 
+                    name="q"
+                    placeholder="Qidirish..." 
+                    class="bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 w-64 focus:ring-2 focus:ring-primary-500/50 outline-none transition-all"
+                    hx-get="{% url 'marketplace:product_list_partial' %}"
+                    hx-trigger="keyup changed delay:500ms"
+                    hx-target="#product-grid"
+                    hx-indicator=".htmx-indicator"
+                >
+            </div>
+            
+            <a href="{% url 'marketplace:ai_smart_search' %}" class="flex items-center gap-2 px-4 py-2.5 bg-primary-600/10 text-primary-400 border border-primary-500/20 rounded-xl hover:bg-primary-500/20 transition-all font-bold">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                AI Qidiruv
+            </a>
+            
+            <select 
+                name="category" 
+                class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary-500/50"
+                hx-get="{% url 'marketplace:product_list_partial' %}"
+                hx-target="#product-grid"
+            >
+                <option value="">Barcha Kategoriyalar</option>
+                {% for category in categories %}
+                    <option value="{{ category.slug }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    {% if top_viewed_products %}
+    <div class="mt-8 p-6 bg-slate-900 border border-slate-800 rounded-3xl">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h2 class="text-lg font-bold">Eng ko'p ko'rilgan mahsulotlar</h2>
+                <p class="text-sm text-slate-500">Trenddagi mahsulotlar va ilg'or sotuvchilar.</p>
+            </div>
+            <a href="#product-grid" class="text-sm text-primary-400 hover:underline">Barchasini ko'rish</a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {% for product in top_viewed_products %}
+            <div class="glass p-4 rounded-3xl border-slate-800/50 hover:border-primary-500/30 transition-all">
+                <a href="{% url 'marketplace:product_detail' product.slug %}" class="block text-slate-100 font-semibold hover:text-primary-400 mb-2">{{ product.title }}</a>
+                <p class="text-xs text-slate-500 mb-2">{{ product.seller.username }} • {{ product.view_count|default:0 }} ko'rish</p>
+                <p class="text-sm text-slate-400 line-clamp-2 mb-3">{{ product.description }}</p>
+                <div class="flex items-center justify-between gap-3">
+                    <span class="font-bold text-white">{{ product.price|uzs }}</span>
+                    <span class="text-xs text-emerald-400">Trend</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Loading Indicator -->
+    <div class="htmx-indicator flex justify-center py-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+    </div>
+
+    <!-- Product Grid Container -->
+    <div id="product-grid">
+        {% include 'marketplace/partials/product_grid.html' %}
+    </div>
+</div>
+{% endblock %}

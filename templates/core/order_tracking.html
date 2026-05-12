@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load currency_tags %}
+
+{% block title %}Buyurtma Kuzatish | sotdim.uz{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-8">
+    <div class="flex items-center justify-between">
+        <a href="{% url 'core:purchases' %}" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            Orqaga
+        </a>
+        <h1 class="text-xl font-bold">Buyurtma #{{ order.id }}</h1>
+    </div>
+
+    <!-- Product Card -->
+    <div class="glass p-6 rounded-3xl border-slate-800/50 flex items-center gap-6">
+        <div class="w-24 h-24 rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
+            {% if order.product.preview_image %}
+                <img src="{{ order.product.preview_image.url }}" class="w-full h-full object-cover">
+            {% else %}
+                <div class="w-full h-full flex items-center justify-center text-slate-700">
+                    <i data-lucide="image" class="w-8 h-8"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="flex-1">
+            <h2 class="text-xl font-bold text-white">{{ order.product.title }}</h2>
+            <p class="text-slate-400 text-sm mt-1">Sotuvchi: {{ order.product.seller.username }}</p>
+            <div class="flex items-center gap-4 mt-3">
+                <span class="text-lg font-bold text-primary-400">{{ order.amount|uzs }}</span>
+                <span class="px-3 py-1 bg-primary-500/10 text-primary-400 rounded-lg text-xs font-bold uppercase tracking-wider">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Progress -->
+    <div class="glass p-8 rounded-3xl border-slate-800/50">
+        <div class="relative space-y-12">
+            <!-- Vertical Line -->
+            <div class="absolute left-[23px] top-4 bottom-4 w-0.5 bg-slate-800"></div>
+
+            {% for status in statuses %}
+            {% with is_done=forloop.counter0|add:"-1" < current_index is_current=forloop.counter0 == current_index %}
+            <div class="relative flex items-start gap-8 group">
+                <!-- Icon Circle -->
+                <div class="z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 
+                    {% if is_done %}bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]
+                    {% elif is_current %}bg-primary-500 shadow-[0_0_20px_rgba(14,165,233,0.4)] animate-pulse
+                    {% else %}bg-slate-900 border-2 border-slate-800{% endif %}">
+                    
+                    {% if is_done %}
+                        <i data-lucide="check" class="w-6 h-6 text-white"></i>
+                    {% else %}
+                        <i data-lucide="{{ status.icon }}" class="w-5 h-5 {% if is_current %}text-white{% else %}text-slate-600{% endif %}"></i>
+                    {% endif %}
+                </div>
+
+                <!-- Text Info -->
+                <div class="pt-2">
+                    <h3 class="font-bold {% if is_done %}text-emerald-400{% elif is_current %}text-primary-400{% else %}text-slate-500{% endif %}">
+                        {{ status.label }}
+                    </h3>
+                    {% if is_current %}
+                        <p class="text-sm text-slate-400 mt-1">Hozirgi holat. Admin/Sotuvchi tekshirmoqda...</p>
+                    {% elif is_done %}
+                        <p class="text-sm text-slate-500 mt-1">Bajarildi</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if order.status == 'PAID' or order.status == 'COMPLETED' or order.status == 'DELIVERED' %}
+    <div class="glass p-8 rounded-3xl border-emerald-500/20 bg-emerald-500/5 text-center space-y-4">
+        <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
+            <i data-lucide="download" class="w-8 h-8 text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Mahsulot tayyor!</h3>
+        <p class="text-slate-400">To'lov tasdiqlandi. Faylni hoziroq yuklab olishingiz mumkin.</p>
+        <a href="{% url 'core:download_purchase' order.id %}" class="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold transition-all">
+            Faylni yuklab olish
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load currency_tags %}
+
+{% block title %}Seller Dashboard | sotdim.uz{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold">Seller Dashboard</h1>
+            <p class="text-slate-400 mt-2">Sotuvchi statistikalari, hamyon va referral paneli.</p>
+        </div>
+        <div class="space-y-2 text-right">
+            <a href="{% url 'marketplace:product_create' %}" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary-600 text-white font-semibold hover:bg-primary-500 transition-all">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Mahsulot qo'shish
+            </a>
+            <a href="{% url 'ai_system:assistant' %}" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-slate-700 text-slate-200 hover:bg-slate-900 transition-all">
+                <i data-lucide="bot" class="w-4 h-4"></i>
+                AI Seller Tools
+            </a>
+        </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-4">
+        <div class="glass rounded-3xl p-6 border border-slate-800/50">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.18em]">Balansingiz</p>
+            <h2 class="text-3xl font-bold mt-3">{{ wallet.balance|uzs }}</h2>
+            <p class="text-sm text-slate-500 mt-2">Foydalanishga tayyor balans.</p>
+        </div>
+        <div class="glass rounded-3xl p-6 border border-slate-800/50">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.18em]">Sotuvlar</p>
+            <h2 class="text-3xl font-bold mt-3">{{ recent_sales|length }}</h2>
+            <p class="text-sm text-slate-500 mt-2">Oxirgi muvaffaqiyatli savdolar.</p>
+        </div>
+        <div class="glass rounded-3xl p-6 border border-slate-800/50">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.18em]">Referral</p>
+            <h2 class="text-3xl font-bold mt-3">{{ referrals|length }}</h2>
+            <p class="text-sm text-slate-500 mt-2">Taklif qilingan foydalanuvchilar.</p>
+        </div>
+        <div class="glass rounded-3xl p-6 border border-slate-800/50">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.18em]">Tasdiqlash</p>
+            <h2 class="text-3xl font-bold mt-3">{% if verification %}{{ verification.status }}{% else %}N/A{% endif %}</h2>
+            <p class="text-sm text-slate-500 mt-2">Hujjatlaringiz hozirgi holati.</p>
+        </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2 glass rounded-3xl border border-slate-800/50 overflow-hidden">
+            <div class="p-6 border-b border-slate-800/50 flex items-center justify-between">
+                <div>
+                    <h2 class="font-bold text-white">Seller Insight</h2>
+                    <p class="text-sm text-slate-500 mt-1">AI va analytics orqali eng yaxshi mahsulotlaringiz.</p>
+                </div>
+                <span class="text-xs text-slate-400 uppercase tracking-[0.2em]">{{ profile.trust_score }} Trust</span>
+            </div>
+            <div class="p-6 grid gap-4 sm:grid-cols-2">
+                {% for stat in analytics %}
+                <div class="rounded-3xl bg-slate-950/70 p-5 border border-slate-800/60">
+                    <p class="text-sm text-slate-400">{{ stat.date }}</p>
+                    <h3 class="text-2xl font-semibold text-white mt-2">{{ stat.revenue|uzs }}</h3>
+                    <p class="text-sm text-slate-500 mt-1">{{ stat.orders_count }} orders · {{ stat.product_views }} views</p>
+                </div>
+                {% empty %}
+                <div class="rounded-3xl bg-slate-950/70 p-5 border border-slate-800/60 col-span-2">
+                    <p class="text-sm text-slate-500">Hozircha analytics ma'lumotlari yo'q. Birinchi savdoni qo'ying yoki AI tavsiyalaridan foydalaning.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="glass rounded-3xl border border-slate-800/50 p-6">
+            <h3 class="font-bold text-white">Referral kod</h3>
+            <p class="text-slate-400 mt-3">O'zingizga xos referral havolangiz:</p>
+            <div class="mt-4 p-4 rounded-3xl bg-slate-950/80 border border-slate-800">
+                <p class="font-semibold text-white break-all">{{ referral_url }}</p>
+            </div>
+            <p class="text-sm text-slate-500 mt-4">Har bir ro'yxatdan o'tish uchun bonus pul balansiga tushadi.</p>
+        </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+        <div class="glass rounded-3xl border border-slate-800/50 p-6">
+            <h3 class="font-bold text-white">So'nggi savdolar</h3>
+            <div class="mt-5 space-y-4">
+                {% for order in recent_sales %}
+                <div class="rounded-3xl bg-slate-950/70 border border-slate-800 p-4">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <p class="text-sm text-slate-400">{{ order.product.title }}</p>
+                            <p class="text-xs text-slate-500 mt-1">{{ order.created_at|timesince }} oldin</p>
+                        </div>
+                        <p class="font-semibold text-white">{{ order.amount|uzs }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-slate-500">Hech qanday savdo yo'q. Mahsulot qo'shing va birinchi sotuvni bajaring.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="glass rounded-3xl border border-slate-800/50 p-6">
+            <h3 class="font-bold text-white">Top mahsulotlar</h3>
+            <div class="mt-5 space-y-4">
+                {% for product in top_products %}
+                <div class="rounded-3xl bg-slate-950/70 border border-slate-800 p-4">
+                    <div class="flex items-center justify-between gap-4">
+                        <span class="text-sm text-slate-400">{{ product.title }}</span>
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded-full">{{ product.view_count|default:0 }} views</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-slate-500">Top mahsulotlar mavjud emas.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="glass rounded-3xl border border-slate-800/50 p-6">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <h3 class="font-bold text-white">Referral menejeri</h3>
+                <p class="text-slate-400 mt-1">Yangi takliflar yaratish va mavjud referral holatini kuzatish.</p>
+            </div>
+        </div>
+        <form action="{% url 'users:submit_referral' %}" method="post" class="mt-6 grid gap-4 sm:grid-cols-[1fr_auto]">
+            {% csrf_token %}
+            <input name="referred_email" type="email" placeholder="friend@example.com" required class="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-white outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20" />
+            <button type="submit" class="rounded-2xl bg-primary-600 px-6 py-3 text-white font-semibold hover:bg-primary-500 transition-all">Taklif yuborish</button>
+        </form>
+
+        <div class="mt-6 space-y-3">
+            {% for referral in referrals %}
+            <div class="rounded-3xl bg-slate-950/70 border border-slate-800 p-4 flex items-center justify-between gap-4">
+                <div>
+                    <p class="text-sm text-white">{{ referral.referred_email }}</p>
+                    <p class="text-xs text-slate-500">{{ referral.created_at|date:'d M Y H:i' }}</p>
+                </div>
+                {% if referral.is_converted %}
+                <span class="text-xs uppercase tracking-[0.15em] text-emerald-400">{{ referral.is_converted|yesno:'Converted,Pending' }}</span>
+                {% else %}
+                <span class="text-xs uppercase tracking-[0.15em] text-amber-400">{{ referral.is_converted|yesno:'Converted,Pending' }}</span>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p class="text-slate-500">Ko'rsatmalar yo'q. Birinchi referralni yuboring.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

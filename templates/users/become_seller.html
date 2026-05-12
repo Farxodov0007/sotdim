@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Become a Seller | sotdim.uz{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-12rem)] px-4 py-10 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto space-y-8">
+        <section class="grid gap-8 lg:grid-cols-[1.3fr_0.9fr] items-center">
+            <div class="space-y-6">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-semibold uppercase tracking-[0.2em]">Seller program</span>
+                <h1 class="text-4xl sm:text-5xl font-heading font-bold text-white">Sizning onlayn do'koningizni premium darajada o'rnating.</h1>
+                <p class="text-slate-400 max-w-2xl">Sotdim.uz orqali raqamli mahsulotlar, dizaynlar va xizmatlarni millionlab foydalanuvchilarga yetkazing. Bizning sotuvchi ekotizimimiz moliya, AI, analytics va ishonchli tasdiqlashni o'zida mujassam etadi.</p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'users:seller_onboarding' %}" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-2xl bg-primary-600 text-white font-semibold shadow-lg shadow-primary-500/20 hover:bg-primary-500 transition-all">Sotuvchi bo'lish</a>
+                    {% else %}
+                        <a href="{% url 'users:register' %}" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-2xl bg-primary-600 text-white font-semibold shadow-lg shadow-primary-500/20 hover:bg-primary-500 transition-all">Hisob yaratish</a>
+                        <a href="{% url 'users:login' %}" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-2xl border border-slate-700 text-slate-200 hover:bg-slate-900 transition-all">Tizimga kirish</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="glass rounded-3xl border border-slate-800/60 p-6">
+                <div class="space-y-5">
+                    <div class="rounded-3xl bg-slate-950/70 p-6 border border-slate-800/80">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Sotuvchi sathlari</p>
+                                <h2 class="text-2xl font-bold text-white mt-2">Premium seller ekotizimi</h2>
+                            </div>
+                            <i data-lucide="award" class="w-10 h-10 text-primary-400"></i>
+                        </div>
+                        <p class="mt-4 text-slate-400 text-sm">Tasdiqlangan sotuvchilarimizning mavjud mijozlari ko'payadi, konversiya oshadi va ishonchli biznes imiji yaratiladi.</p>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="flex items-start gap-3 p-4 rounded-3xl bg-slate-950/70 border border-slate-800/80">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-slate-400">Texnik va biznes tasdiqlash</p>
+                                <p class="text-white font-semibold">Sotuvchilar uchun ishonch va xavfsizlik</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 rounded-3xl bg-slate-950/70 border border-slate-800/80">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-primary-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-slate-400">Ajoyib ma'lumotlar</p>
+                                <p class="text-white font-semibold">Real vaqtli AI analytics va savdo hisobotlari</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 rounded-3xl bg-slate-950/70 border border-slate-800/80">
+                            <i data-lucide="credit-card" class="w-6 h-6 text-amber-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm text-slate-400">Hamyon va yechib olish</p>
+                                <p class="text-white font-semibold">Instant pul hisobiga tushishi va withdrawal opsiyalari</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid gap-6 lg:grid-cols-3">
+            <article class="glass rounded-3xl p-6 border border-slate-800/60">
+                <h3 class="text-lg font-bold text-white">AI Seller Assistant</h3>
+                <p class="text-slate-400 mt-2">Mahsulotlarni avtomatik tavsiya etish, SEO tavsiyalar va marketing copy generatori orqali mahsulotingizni tezroq sotishingiz mumkin.</p>
+            </article>
+            <article class="glass rounded-3xl p-6 border border-slate-800/60">
+                <h3 class="text-lg font-bold text-white">PWA va mobil</h3>
+                <p class="text-slate-400 mt-2">Progressive Web App uslubi bilan mobil foydalanuvchilar uchun sanoat darajasida ishlash va tezlik.</p>
+            </article>
+            <article class="glass rounded-3xl p-6 border border-slate-800/60">
+                <h3 class="text-lg font-bold text-white">Referal tizimi</h3>
+                <p class="text-slate-400 mt-2">Sizning sheriklaringizni taklif qiling va har bir muvaffaqiyatli ro'yxatdan o'tish uchun bonus oling.</p>
+            </article>
+        </section>
+    </div>
+</div>
+{% endblock %}

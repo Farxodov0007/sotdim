@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load currency_tags %}
+
+{% block title %}{{ category.name }} | Marketplace{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="glass rounded-3xl border-slate-800/50 overflow-hidden p-8 relative">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-slate-950/40 pointer-events-none"></div>
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+            <div class="space-y-4">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-3xl bg-slate-900 border border-slate-800 text-primary-400">
+                    <i data-lucide="{{ category.icon }}" class="w-6 h-6"></i>
+                </div>
+                <h1 class="text-3xl font-heading font-bold text-white">{{ category.name }}</h1>
+                <p class="text-slate-400">{{ category.description }}</p>
+            </div>
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="rounded-3xl bg-slate-900 border border-slate-800 p-5">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Mahsulotlar</p>
+                    <p class="text-3xl font-bold text-white mt-3">{{ products.count }}</p>
+                </div>
+                <div class="rounded-3xl bg-slate-900 border border-slate-800 p-5">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Sotuvchilar</p>
+                    <p class="text-3xl font-bold text-white mt-3">{{ popular_sellers.count }}</p>
+                </div>
+                <div class="rounded-3xl bg-slate-900 border border-slate-800 p-5">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Xizmatlar</p>
+                    <p class="text-3xl font-bold text-white mt-3">{{ freelance_projects.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if subcategories %}
+    <div class="glass rounded-3xl border-slate-800/50 p-6">
+        <div class="flex flex-wrap gap-3">
+            <a href="?" class="px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-800 transition-all">Barchasi</a>
+            {% for sub in subcategories %}
+            <a href="?subcategory={{ sub.slug }}" class="px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold hover:bg-primary-500/10 hover:text-primary-300 transition-all">{{ sub.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold">{{ category.name }} mahsulotlari</h2>
+                    <p class="text-slate-400 text-sm">{{ products.count }} ta mahsulot topildi.</p>
+                </div>
+                <a href="{% url 'marketplace:product_list' %}" class="text-sm text-primary-400 hover:underline">Barcha mahsulotlar</a>
+            </div>
+
+            {% if products %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for product in products %}
+                <div class="glass group rounded-3xl border-slate-800/50 hover:border-primary-500/30 transition-all overflow-hidden flex flex-col">
+                    <div class="aspect-video relative overflow-hidden bg-slate-900">
+                        {% if product.preview_image %}
+                        <img src="{{ product.preview_image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-slate-700"><i data-lucide="image" class="w-8 h-8"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <div class="mb-3 flex items-center justify-between gap-2">
+                            <span class="text-[10px] uppercase tracking-[0.3em] text-primary-300 font-bold">{{ product.category.name }}</span>
+                            {% if product.subcategory %}
+                            <span class="text-[10px] bg-slate-950/80 text-slate-400 px-2 py-1 rounded-full">{{ product.subcategory.name }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'marketplace:product_detail' product.slug %}" class="text-white font-bold text-lg hover:text-primary-400 transition-colors line-clamp-2">{{ product.title }}</a>
+                        <p class="text-slate-400 text-sm mt-3 line-clamp-2">{{ product.description }}</p>
+                        <div class="mt-auto pt-4 flex items-center justify-between gap-3">
+                            <span class="font-bold text-white">{{ product.price|uzs }}</span>
+                            <a href="{% url 'marketplace:product_detail' product.slug %}" class="text-xs font-bold text-primary-400 hover:underline">Ko'rish</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="glass rounded-3xl border-slate-800/50 p-8 text-center text-slate-400">
+                <p>Bu kategoriyada hali mahsulotlar mavjud emas.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <aside class="space-y-6">
+            <div class="glass rounded-3xl border-slate-800/50 p-6">
+                <h3 class="text-lg font-bold mb-4">Mashhur sotuvchilar</h3>
+                <div class="space-y-4">
+                    {% for seller in popular_sellers %}
+                    <div class="rounded-3xl bg-slate-900 border border-slate-800 p-4">
+                        <div class="flex items-center gap-3">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ seller.username }}" alt="{{ seller.username }}" class="w-12 h-12 rounded-2xl border border-slate-800">
+                            <div>
+                                <p class="font-semibold text-white">{{ seller.username }}</p>
+                                <p class="text-xs text-slate-500">{{ seller.product_count }} mahsulot</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-slate-400 text-sm">Bu kategoriyada hali faol sotuvchilar yo'q.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="glass rounded-3xl border-slate-800/50 p-6">
+                <h3 class="text-lg font-bold mb-4">Tegishli xizmatlar</h3>
+                <div class="space-y-4">
+                    {% for project in freelance_projects %}
+                    <div class="rounded-3xl bg-slate-900 border border-slate-800 p-4">
+                        <p class="font-semibold text-white line-clamp-2">{{ project.title }}</p>
+                        <p class="text-xs text-slate-500 mt-2">By {{ project.client.username }} • {{ project.budget|uzs }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-slate-400 text-sm">Bu kategoriyada xizmatlar mavjud emas.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

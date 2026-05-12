@@ -1,0 +1,20 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stylized Icon (S + Digital Box) -->
+  <rect x="5" y="10" width="40" height="40" rx="12" fill="url(#paint0_linear)" />
+  <path d="M20 20C20 18.8954 20.8954 18 22 18H28C29.1046 18 30 18.8954 30 20V22H20V20Z" fill="white" fill-opacity="0.2"/>
+  <path d="M15 25H35V40C35 42.7614 32.7614 45 30 45H20C17.2386 45 15 42.7614 15 40V25Z" fill="white" fill-opacity="0.1"/>
+  
+  <!-- The "S" shape inside the box -->
+  <path d="M20 30C20 28.3431 21.3431 27 23 27H27C28.6569 27 30 28.3431 30 30V32C30 33.6569 28.6569 35 27 35H23C21.3431 35 20 36.3431 20 38V40C20 41.6569 21.3431 43 23 43H27C28.6569 43 30 41.6569 30 40" stroke="white" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Text: sotdim.uz -->
+  <text x="55" y="40" fill="white" style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em;">sotdim<tspan fill="#38bdf8">.uz</tspan></text>
+
+  <!-- Definitions for Gradients -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="5" y1="10" x2="45" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+</svg>

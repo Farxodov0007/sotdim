@@ -1,0 +1,61 @@
+/* Custom Admin CSS for Mobile Optimization */
+
+@media (max-width: 768px) {
+    /* Reduce padding in main content */
+    .content-wrapper {
+        padding: 10px !important;
+    }
+
+    /* Make tables more readable on mobile */
+    .table-responsive {
+        border: 0;
+    }
+
+    /* Simplify the header */
+    .main-header {
+        padding: 0 5px !important;
+    }
+
+    /* Adjust sidebar for touch */
+    .nav-sidebar .nav-link {
+        padding: 12px 15px !important;
+        margin-bottom: 2px;
+    }
+
+    /* Make cards more compact */
+    .card {
+        margin-bottom: 15px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+    }
+
+    .card-body {
+        padding: 15px !important;
+    }
+
+    /* Fix buttons on mobile */
+    .btn {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Hide redundant elements on very small screens */
+    .breadcrumb {
+        display: none !important;
+    }
+}
+
+/* Overall Theme Polish */
+.main-sidebar {
+    background-color: #0f172a !important;
+}
+
+.brand-link {
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+.nav-link.active {
+    background-color: #3b82f6 !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}

@@ -1,0 +1,26 @@
+from django.contrib import admin
+from .models import Category, Product, ProductFile, Wishlist
+
+class ProductFileInline(admin.TabularInline):
+    model = ProductFile
+    extra = 1
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name',)
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('title', 'seller', 'category', 'price', 'product_type', 'is_active', 'is_verified')
+    list_filter = ('product_type', 'is_active', 'is_verified', 'category')
+    search_fields = ('title', 'description', 'seller__email')
+    prepopulated_fields = {'slug': ('title',)}
+    inlines = [ProductFileInline]
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username', 'product__title')
