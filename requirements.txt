@@ -32,7 +32,7 @@ django-jazzmin
 # Frontend (TALL Stack equivalents)
 django-htmx
 django-compressor
-sass
+libsass
 
 # Realtime
 channels[daphne]
@@ -61,4 +61,4 @@ uvicorn
 Pillow
 python-magic
 python-dotenv
-py-ubjson ; sys_platform == "never"
+
